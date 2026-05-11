@@ -1,0 +1,12 @@
+Para adicionar suas fotos ao site, siga estes passos:
+
+1. Coloque as 10 fotos escolhidas aqui dentro desta pasta "fotos".
+2. Abra o arquivo "index.html".
+3. Procure pelas tags de imagem que atualmente estão assim:
+   src="https://via.placeholder.com/500x600?text=Foto+1+(Só+Ela)"
+
+4. Substitua esse link pelo caminho da sua foto. Por exemplo, se você colocou uma foto chamada "nossa-foto.jpg" aqui dentro, o código deve ficar assim:
+   src="fotos/nossa-foto.jpg"
+
+Faça isso para as 10 fotos (da Foto 1 até a Foto 10). 
+Dica: As fotos verticais (formato de retrato/celular em pé) costumam ficar com um encaixe ainda melhor nas molduras!

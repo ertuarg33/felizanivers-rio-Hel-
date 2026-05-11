@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor do Site de Aniversário</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Trebuchet MS, sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #0f1b2e 100%);
+            color: #e8e8e8;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00aa33;
+            font-size: 2.5rem;
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .editor-section {
+            background: rgba(0, 170, 51, 0.05);
+            border: 2px solid rgba(0, 170, 51, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .editor-section h2 {
+            color: #00aa33;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="color"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(15, 20, 25, 0.8);
+            border: 1px solid #00aa33;
+            color: #e8e8e8;
+            border-radius: 6px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        input[type="color"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #00aa33;
+            box-shadow: 0 0 10px rgba(0, 170, 51, 0.3);
+            background: rgba(15, 20, 25, 0.95);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="color"] {
+            height: 50px;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            border: 2px solid #00aa33;
+            background: transparent;
+            color: #00aa33;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.4s ease;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #00aa33;
+            color: #0a0e1a;
+            box-shadow: 0 0 20px rgba(0, 170, 51, 0.5);
+        }
+
+        .btn-preview {
+            background: #00aa33;
+            color: #0a0e1a;
+        }
+
+        .btn-preview:hover {
+            background: #00b386;
+            box-shadow: 0 0 30px rgba(0, 170, 51, 0.6);
+        }
+
+        .preview-container {
+            background: rgba(0, 170, 51, 0.05);
+            border: 2px solid rgba(0, 170, 51, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .preview-container h3 {
+            color: #00aa33;
+            margin-bottom: 15px;
+        }
+
+        .color-preview {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .color-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .color-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 170, 51, 0.3);
+        }
+
+        .color-name {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        .info-box {
+            background: rgba(0, 170, 51, 0.1);
+            border-left: 4px solid #00aa33;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(0, 170, 51, 0.2);
+            border: 2px solid #00aa33;
+            color: #00aa33;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .photo-preview {
+            margin-top: 15px;
+            border-radius: 8px;
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border: 2px solid rgba(0, 170, 51, 0.3);
+        }
+
+        .export-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(0, 170, 51, 0.05);
+            border: 2px solid rgba(0, 170, 51, 0.2);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .export-section h3 {
+            color: #00aa33;
+            margin-bottom: 15px;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: #00aa33;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎨 Editor do Site de Aniversário</h1>
+
+        <div id="successMessage" class="success-message">
+            ✅ Configurações salvas com sucesso!
+        </div>
+
+        <!-- Edição de Textos -->
+        <div class="editor-grid">
+            <div class="editor-section">
+                <h2>📝 Editar Textos</h2>
+
+                <div class="info-box">
+                    Altere aqui os textos principais do site. As mudanças aparecerão ao recarregar o index.html.
+                </div>
+
+                <div class="form-group">
+                    <label for="welcomeTitle">Título de Boas-vindas</label>
+                    <input type="text" id="welcomeTitle" placeholder="Ex: Quer uma surpresa?">
+                </div>
+
+                <div class="form-group">
+                    <label for="heroTitle">Título Principal</label>
+                    <input type="text" id="heroTitle" placeholder="Ex: Uma história especial">
+                </div>
+
+                <div class="form-group">
+                    <label for="birthdayTitle">Título de Aniversário</label>
+                    <input type="text" id="birthdayTitle" placeholder="Ex: Feliz Aniversário ❤️">
+                </div>
+
+                <div class="form-group">
+                    <label for="signature">Assinatura</label>
+                    <input type="text" id="signature" placeholder="Ex: Com carinho, Arthur.">
+                </div>
+
+                <div class="form-group">
+                    <label for="birthdayMessage">Mensagem de Aniversário</label>
+                    <textarea id="birthdayMessage" placeholder="Escreva sua mensagem emocional aqui..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button onclick="saveTexts()">💾 Salvar Textos</button>
+                </div>
+            </div>
+
+            <!-- Edição de Fotos -->
+            <div class="editor-section">
+                <h2>📸 URLs das Fotos</h2>
+
+                <div class="info-box">
+                    Cole aqui os links das suas fotos. Use formatos: JPG, PNG ou GIF.
+                </div>
+
+                <div class="form-group">
+                    <label for="photo1">Foto 1</label>
+                    <input type="url" id="photo1" placeholder="https://...">
+                    <img id="preview1" class="photo-preview" style="display:none;">
+                </div>
+
+                <div class="form-group">
+                    <label for="photo2">Foto 2</label>
+                    <input type="url" id="photo2" placeholder="https://...">
+                    <img id="preview2" class="photo-preview" style="display:none;">
+                </div>
+
+                <div class="form-group">
+                    <label for="photo3">Foto 3</label>
+                    <input type="url" id="photo3" placeholder="https://...">
+                    <img id="preview3" class="photo-preview" style="display:none;">
+                </div>
+
+                <div class="button-group">
+                    <button onclick="savePhotos()">💾 Salvar Fotos</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edição de Cores -->
+        <div class="editor-grid">
+            <div class="editor-section">
+                <h2>🎨 Personalizar Cores</h2>
+
+                <div class="info-box">
+                    Escolha as cores do seu site. Mantenha a harmonia para melhor resultado visual.
+                </div>
+
+                <div class="form-group">
+                    <label for="accentColor">Cor Principal (Verde Neon)</label>
+                    <input type="color" id="accentColor" value="#00aa33">
+                </div>
+
+                <div class="form-group">
+                    <label for="darkColor">Cor de Fundo Escura</label>
+                    <input type="color" id="darkColor" value="#0a0e1a">
+                </div>
+
+                <div class="form-group">
+                    <label for="textColor">Cor do Texto</label>
+                    <input type="color" id="textColor" value="#e8e8e8">
+                </div>
+
+                <div class="button-group">
+                    <button onclick="saveColors()">🎨 Aplicar Cores</button>
+                </div>
+            </div>
+
+            <!-- Temas Pré-definidos -->
+            <div class="editor-section">
+                <h2>✨ Temas Pré-definidos</h2>
+
+                <div class="info-box">
+                    Escolha um tema e personalize conforme desejar.
+                </div>
+
+                <button style="width: 100%; margin-bottom: 10px;" onclick="applyTheme('purple')">
+                    💜 Roxo Elegante
+                </button>
+                <button style="width: 100%; margin-bottom: 10px;" onclick="applyTheme('pink')">
+                    💖 Rosa Romântico
+                </button>
+                <button style="width: 100%; margin-bottom: 10px;" onclick="applyTheme('blue')">
+                    💙 Azul Cinematográfico
+                </button>
+                <button style="width: 100%; margin-bottom: 10px;" onclick="applyTheme('gold')">
+                    ✨ Ouro Luxuoso
+                </button>
+            </div>
+        </div>
+
+        <!-- Seção de Exportação -->
+        <div class="export-section">
+            <h3>📦 Como Usar suas Edições</h3>
+            <p>Suas mudanças são salvas no navegador. Para aplicá-las ao site:</p>
+            <ol style="text-align: left; display: inline-block; margin-top: 15px;">
+                <li>Abra o arquivo <code>index.html</code> com um editor</li>
+                <li>Edite diretamente ou use o <code>config.js</code></li>
+                <li>Recarregue a página no navegador</li>
+                <li>Pronto! As mudanças estarão visíveis</li>
+            </ol>
+            <p style="margin-top: 20px;">
+                <strong>Dica:</strong> Para uma experiência melhor, edite o arquivo <code>index.html</code> ou use o
+                <code>config.js</code> diretamente.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const themes = {
+            purple: {
+                accent: '#a855f7',
+                dark: '#1e1b4b',
+                text: '#f3f4f6'
+            },
+            pink: {
+                accent: '#ec4899',
+                dark: '#1f0a1a',
+                text: '#f3f4f6'
+            },
+            blue: {
+                accent: '#0ea5e9',
+                dark: '#0c1e30',
+                text: '#f3f4f6'
+            },
+            gold: {
+                accent: '#fbbf24',
+                dark: '#1a1410',
+                text: '#f3f4f6'
+            }
+        };
+
+        function saveTexts() {
+            const texts = {
+                welcomeTitle: document.getElementById('welcomeTitle').value || 'Quer uma surpresa?',
+                heroTitle: document.getElementById('heroTitle').value || 'Uma história especial',
+                birthdayTitle: document.getElementById('birthdayTitle').value || 'Feliz Aniversário ❤️',
+                signature: document.getElementById('signature').value || 'Com carinho, Arthur.',
+                birthdayMessage: document.getElementById('birthdayMessage').value || ''
+            };
+
+            localStorage.setItem('siteTexts', JSON.stringify(texts));
+            showSuccess();
+        }
+
+        function savePhotos() {
+            const photos = {
+                photo1: document.getElementById('photo1').value,
+                photo2: document.getElementById('photo2').value,
+                photo3: document.getElementById('photo3').value
+            };
+
+            localStorage.setItem('sitePhotos', JSON.stringify(photos));
+            showSuccess();
+        }
+
+        function saveColors() {
+            const colors = {
+                accent: document.getElementById('accentColor').value,
+                dark: document.getElementById('darkColor').value,
+                text: document.getElementById('textColor').value
+            };
+
+            localStorage.setItem('siteColors', JSON.stringify(colors));
+            applyColorsToPage(colors);
+            showSuccess();
+        }
+
+        function applyTheme(theme) {
+            const colors = themes[theme];
+            document.getElementById('accentColor').value = colors.accent;
+            document.getElementById('darkColor').value = colors.dark;
+            document.getElementById('textColor').value = colors.text;
+            saveColors();
+        }
+
+        function applyColorsToPage(colors) {
+            document.documentElement.style.setProperty('--accent-green', colors.accent);
+            document.documentElement.style.setProperty('--primary-dark', colors.dark);
+            document.documentElement.style.setProperty('--text-primary', colors.text);
+        }
+
+        function showSuccess() {
+            const msg = document.getElementById('successMessage');
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }
+
+        function loadSavedData() {
+            const texts = JSON.parse(localStorage.getItem('siteTexts') || '{}');
+            const photos = JSON.parse(localStorage.getItem('sitePhotos') || '{}');
+            const colors = JSON.parse(localStorage.getItem('siteColors') || '{}');
+
+            if (texts.welcomeTitle) document.getElementById('welcomeTitle').value = texts.welcomeTitle;
+            if (texts.heroTitle) document.getElementById('heroTitle').value = texts.heroTitle;
+            if (texts.birthdayTitle) document.getElementById('birthdayTitle').value = texts.birthdayTitle;
+            if (texts.signature) document.getElementById('signature').value = texts.signature;
+            if (texts.birthdayMessage) document.getElementById('birthdayMessage').value = texts.birthdayMessage;
+
+            if (photos.photo1) document.getElementById('photo1').value = photos.photo1;
+            if (photos.photo2) document.getElementById('photo2').value = photos.photo2;
+            if (photos.photo3) document.getElementById('photo3').value = photos.photo3;
+
+            if (colors.accent) document.getElementById('accentColor').value = colors.accent;
+            if (colors.dark) document.getElementById('darkColor').value = colors.dark;
+            if (colors.text) document.getElementById('textColor').value = colors.text;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadSavedData);
+    </script>
+</body>
+
+</html>
